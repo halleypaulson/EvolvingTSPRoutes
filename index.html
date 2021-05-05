@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="description" content="Evolving solutions to a TSP instance" />
-    <meta name="author" content="PUT YOUR NAME HERE" />
+    <meta name="author" content="Halley Paulson" />
 
     <link
       rel="stylesheet"
@@ -76,9 +76,9 @@
       </div>
     </div>
 
-    <script src="jquery-3.6.0.min.js"></script>
-    <script src="async.min.js"></script>
-    <script src="evotsp.js"></script>
+    <script src="vendor/jquery-3.6.0.min.js"></script>
+    <script src="vendor/async.min.js"></script>
+    <script src="js/evotsp.js"></script>
     <script>
       var mymap = L.map("map").setView([46.7296, -94.6859], 6); //automate or import view for future
 
@@ -92,7 +92,7 @@
           tileSize: 512,
           zoomOffset: -1,
           accessToken:
-            "PUT YOUR TOKEN HERE",
+            "pk.eyJ1IjoiaGFsbGV5cGF1bHNvbiIsImEiOiJja29icXBqa24wYzJyMzJsaDE5YzN6NnMzIn0.xsa-igS70UUoc4CfuPwnkg",
         }
       ).addTo(mymap);
     </script>

@@ -159,6 +159,8 @@
 
   function getBestRoutes(generation, callback) {
     const numToReturn = $("#num-parents").val();
+    const runId = $("#runId-text-field").val();
+
     $.ajax({
       method: 'GET',
       url: baseUrl + `/best?runId=${runId}&generation=${generation}&numToReturn=${numToReturn}`,
@@ -173,42 +175,31 @@
           console.error('Response: ', jqXHR.responseText);
           alert('An error occurred when getting the best routes:\n' + jqXHR.responseText);
       }
-  })
+  });
   }
 
-  // Create the specified number of children by mutating the given
-  // parent that many times. Each child should have their generation
-  // set to ONE MORE THAN THE GIVEN GENERATION. This is crucial, or
-  // every route will end up in the same generation.
-  //
-  // This will use one of the new Lambdas that you wrote for the final
-  // project.
-  //
-  // MAKE SURE YOU USE
-  //
-  //   children => cb(null, children)
-  //
-  // as the `success` callback function in your Ajax call to make sure
-  // the children pass down through the `runGeneration` waterfall.
   function makeChildren(parent, numChildren, generation, cb) {
+    const store = lengthStoreThreshold;
+    
+    
     $.ajax({
       method: 'POST',
-      url: baseUrl + `/mutateroute`,
+      url: baseUrl + '/mutateRoute',
       data: JSON.stringify({
-        routeId: parent,
-        numChildren: numChildren,
-        lengthStoreThreshold: lengthStoreThreshold
-    }),
+        routeId: parent.routeId,
+        numOfChildren: numChildren,
+        lengthStoreThreshold: store
+      }),
       contentType: 'application/json',
-      success: (children) => cb(null, children),
+      success: (result) => cb(null, JSON.parse(result.body)),
       error: function ajaxError(jqXHR, textStatus, errorThrown) {
           console.error(
-              'Error generating best routes: ', 
+              'Error generating children: ', 
               textStatus, 
               ', Details: ', 
               errorThrown);
           console.error('Response: ', jqXHR.responseText);
-          alert('An error occurred when getting the best routes:\n' + jqXHR.responseText);
+          alert('An error occurred when getting children:\n' + jqXHR.responseText);
       }
   })
   }
@@ -218,7 +209,10 @@
       method: 'GET',
       url: baseUrl + '/routes' + '/' + routeId,
       contentType: 'application/json',
-      success: (result) => callback(null, result),
+      success: function onSuccess(result) {
+        console.log(result);
+        callback(result.Item);
+      },
       error: function ajaxError(jqXHR, textStatus, errorThrown) {
           console.error(
               'Error getting route: ', 
@@ -236,15 +230,15 @@
       method: 'GET',
       url: baseUrl + '/city-data',
       contentType: 'application/json',
-      success: (result) => callback(null, result),
+      success: (result) => callback(JSON.parse(result.body)),
       error: function ajaxError(jqXHR, textStatus, errorThrown) {
           console.error(
-              'Error getting route: ', 
+              'Error getting city data: ', 
               textStatus, 
               ', Details: ', 
               errorThrown);
           console.error('Response: ', jqXHR.responseText);
-          alert('An error occurred when getting the route:\n' + jqXHR.responseText);
+          alert('An error occurred when getting city data:\n' + jqXHR.responseText);
       }
   })
   }
@@ -267,7 +261,7 @@
 
   function displayRoute(result) {
     const routeId = result.routeId;
-    const length = result.length;
+    const length = result.len;
     $('#new-route-list').append(`<li>We generated route ${routeId} with length ${length}.</li>`);
   }
 
@@ -276,8 +270,8 @@
       const Id = route.routeId;
       const length = route.len;
       $('#best-route-list')
-      .append(`<li>Route ID: ${Id} </li><br>
-               <li>Length: ${length} </li>`);
+      .append(`<li>Route ID: ${Id} <br>
+               Length: ${length} </li>`);
     });
 
     dbp_cb(null, bestRoutes);
@@ -293,9 +287,11 @@
   }
 
   function updateBest(routeId) {
+    console.log(routeId + "This is in updateBest");
     getRouteById(routeId, processNewRoute);
 
     function processNewRoute(route) {
+      console.log(best.len + "/" + JSON.stringify(route) + "this is the best");
       if (best.len > route.len && route == "") {
         console.log(`Getting route ${routeId} failed; trying again.`);
         updateBest(routeId);
@@ -391,9 +387,9 @@
 
   $(function onDocReady() {
     // These set you up with some reasonable defaults.
-    $("#population-size-text-field").val(10);
-    $("#num-parents").val(5);
-    $("#num-generations").val(3);
+    $("#population-size-text-field").val(100);
+    $("#num-parents").val(20);
+    $("#num-generations").val(15);
     $("#run-evolution").click(runEvolution);
     // Get all the city data (names, etc.) once up
     // front to be used in the mapping throughout.

@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="description" content="Evolving solutions to a TSP instance" />
     <meta name="author" content="Halley Paulson" />
+    <link rel="stylesheet" href="index.css" />
 
     <link
       rel="stylesheet"
@@ -14,7 +15,6 @@
       integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
       crossorigin=""
     />
-    <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script
       src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
       integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
@@ -23,9 +23,16 @@
   </head>
 
   <body>
-    <h1>Evo-TSP</h1>
+
+    <header>
+      <div id="map" style="width: 1300px; height: 600px"></div>
+    </header>
+
     <div>
-      <h2>"Global" parameters</h2>
+      <h1>Evolving 'Traveling Salesman Problem' Routes</h1>
+    
+    <div>
+      <h2>"Global" Parameters</h2>
 
       <label for="runId-text-field">Run ID:</label>
       <input type="text" id="runId-text-field" />
@@ -33,13 +40,13 @@
       <label for="population-size-text-field">Population size:</label>
       <input type="text" id="population-size-text-field" />
 
-      <label for="num-parents">Number of parents to keep:</label>
+      <label for="num-parents">Amount of Parents to Keep:</label>
       <input type="text" id="num-parents" />
     </div>
 
-    <div id="map" style="height: 500px; width: 500px"></div>
     <div id="best-run-routes">
       <h2>Best so far</h2>
+      <span id="best-route-object"></span>
       <ul>
         <li>Best <code>routeId</code>: <span id="best-routeId"></span></li>
         <li>Best length: <span id="best-length"></span></li>
@@ -70,10 +77,11 @@
     </div>
 
     <div class="get-best-routes">
-      <h2>Best routes from previous generation</h2>
+      <h2>Parents from all Generations:</h2>
       <div id="best-routes">
         <ol id="best-route-list"></ol>
       </div>
+    </div>
     </div>
 
     <script src="vendor/jquery-3.6.0.min.js"></script>

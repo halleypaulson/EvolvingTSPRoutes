@@ -17,6 +17,7 @@
     const initialGeneration = 0;
     $("#runId-text-field").val(runId);
     $("#current-generation").text(initialGeneration);
+    $("#best-route-list").text("");
 
     async.series([  
       initializePopulation, 
